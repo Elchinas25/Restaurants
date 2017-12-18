@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Resturants | {{block.super}}{% endblock %}
+
+{% block content %}
+<h1>Hola Pepe</h1>
+<ul>
+	{% for obj in object_list %}
+		<li><a href='{{ obj.get_absolute_url }}'>{{obj.name}}</a>, {{obj.location}}</li>
+	{% endfor %}
+</ul>
+
+{% endblock content %}
+
+

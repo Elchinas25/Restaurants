@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | {{block.super}}{% endblock %}
+
+{% block content %}
+	{% if form.errors.non_field_errors %}
+		{{ form.errors.non_field_errors }}
+	{% endif %}
+	<h1>{{ title }}</h1>
+	<form method="POST"> {% csrf_token %}
+		{{ form.as_p }}
+	<button type="submit">Save</button>
+</form>
+
+{% if form.instance %}
+
+<h2>Your are currently editing {{form.instance.name}}</h2>
+
+{% endif %}
+
+{% endblock content %}

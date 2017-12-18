@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>Vaya {{ varr_entorno }} de codigo html</p>
+<p>
+	{% if varr_entorno == True %}
+	El exito que voy a tener: {{ num }}
+	{% endif %}
+</p>
+<p>
+	{% for i in pares %}
+	{% if i == 2 %}
+	Tu  mierda 2 papito: {{ i }}
+	{% endif %}
+	{% endfor %}
+	<br/>
+	{% for i in pepe %}
+	Mira el nombre: {{i}}<br/>
+	{% endfor %}
+</p>
+{% endblock content %}
