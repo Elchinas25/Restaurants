@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}User | {{block.super}}{% endblock %}
+
+{% block content %}
+<h1>{{ user.username }}</h1>
+<form class="form" method='GET' action=".">
+<input type="text" placeholder="Search..." name="q" value="{{ request.GET.q }}">
+<button class="btn btn-default" type="submit">Submit</button>
+</form>
+{% if user.item_set.all.exists %}
+{% if locations %}
+
+{% for restaurant in locations %}
+	<div class="row">
+	<div class="col-sm-12">
+		<div class="card card-default">
+		<h4>{{ restaurant.name }}</h4>
+		<p>{{restaurant.location}} | {{restaurant.category}}</p>
+		<p>
+		<ul>
+			{% for item in restaurant.item_set.all %}
+			<li><b>{{ item.name }}</b></li>
+			<p>{{item.contents}}</p>
+			{% endfor %}
+		</ul>
+		</p>
+		</div>
+	</div>
+	</div>
+{% endfor %}
+
+
+{% else %}
+<p>No items found /:</p>
+
+{% endif %}
+{% endif %}
+{% endblock content %}

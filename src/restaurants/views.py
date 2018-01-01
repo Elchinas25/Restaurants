@@ -46,7 +46,10 @@ import random
 # 	}
 # 	return render(request, template_name, context)
 
-class RestaurantListView(ListView):
+class RestaurantListView(LoginRequiredMixin, ListView):
+	def get_queryset(self):
+		return RestaurantLocation.objects.filter(owner = self.request.user)
+
 	# def get_queryset(self):
 	# 	slug = self.kwargs.get("slug")
 	# 	if slug:
@@ -56,12 +59,11 @@ class RestaurantListView(ListView):
 	# 			)
 	# 	else:
 	# 		queryset = RestaurantLocation.objects.all()
+
+class RestaurantDetailView(LoginRequiredMixin, DetailView):
 	def get_queryset(self):
 		return RestaurantLocation.objects.filter(owner = self.request.user)
 
-class RestaurantDetailView(DetailView):
-	def get_queryset(self):
-		return RestaurantLocation.objects.filter(owner = self.request.user)
 	# def get_object(self, *args, **kwargs):
 	# 	rest_id = self.kwargs.get('rest_id')
 	# 	obj = get_object_or_404(RestaurantLocation, id=rest_id)
@@ -83,32 +85,37 @@ class RestaurantCreateView(LoginRequiredMixin, CreateView):
 		context['title'] = 'Add restaurant'
 		return context
 
-	def get_form_kwargs(self):
-		kwargs = super(RestaurantCreateView, self).get_form_kwargs()
-		kwargs['user'] = self.request.user
-		return kwargs
+	# def get_form_kwargs(self):
+	# 	kwargs = super(RestaurantCreateView, self).get_form_kwargs()
+	# 	kwargs['user'] = self.request.user
+
+	# def get_form_kwargs(self):
+	# 	kwargs = super(RestaurantCreateView, self).get_form_kwargs()
+	# 	kwargs['user'] = self.request.user
+	# 	return kwargs
 
 
 class RestaurantUpdateView(LoginRequiredMixin, UpdateView):
 	login_url = '/login/'
 	form_class = RestaurantLocationCreateForm
-	template_name = 'form.html'
+	template_name = 'restaurants/detail-update.html'
 	#success_url = '/restaurants/'
 
-	def get_queryset(self):
-		#qs = super(RestaurantUpdateView, self).get_queryset()
-		qs = RestaurantLocation.objects.all()
-		return qs
+	# def get_queryset(self):
+	# 	#qs = super(RestaurantUpdateView, self).get_queryset()
+	# 	qs = RestaurantLocation.objects.all()
+	# 	return qs
 
-	def form_valid(self, form):
-		instance = form.save(commit = False)
-		instance.owner = self.request.user
-		return super(RestaurantUpdateView, self).form_valid(form)
+	# No need of def form_valid bc the form has already been created and is already valid
 
 	def get_context_data(self, *args, **kwargs):
 		context = super(RestaurantUpdateView, self).get_context_data(*args, **kwargs)
-		context['title'] = 'Edit restaurant'
+		name = self.object.name
+		context['title'] = f'Editing restaurant: {name}'
 		return context
+
+	def get_queryset(self):
+		return RestaurantLocation.objects.filter(owner = self.request.user)
 
 	def get_form_kwargs(self):
 		kwargs = super(RestaurantUpdateView, self).get_form_kwargs()

@@ -8,13 +8,26 @@ from .validators import validate_category
 
 User = settings.AUTH_USER_MODEL
 
-# Create your models here.
+class RestaurantLocationQuerySet(models.query.QuerySet):
+	def search(self, query):
+		return self.filter(name__icontains=query)
+
+class RestaurantLocationManager(models.Manager):
+	def get_queryset(self, query):
+		return RestaurantLocationQuerySet(self.model, using=self._db)
+
+	def search(self, query):
+		qs = self.get_queryset().search(query)
+		return qs
+
 class RestaurantLocation(models.Model):
 	owner 		= models.ForeignKey(User) #To get the associated objts: class_instance(of class contrib...).modelminuculas_set.all()
 	name 		= models.CharField(max_length=120)
 	location 	= models.CharField(max_length=120, null=True, blank=True)
 	category	= models.CharField(max_length=120, null=True, blank=True,  validators = [validate_category])
 	slug 		= models.SlugField(null=True, blank=True)
+
+	objects = RestaurantLocationManager() #For RL.objects.whatevermethod()
 
 	def __str__(self):
 		return self.name
